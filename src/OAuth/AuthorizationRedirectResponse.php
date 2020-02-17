@@ -37,12 +37,14 @@ class AuthorizationRedirectResponse extends RedirectResponse
     public function __construct(string $apiKey, string $shopDomain, array $scopes, string $redirectUri, string $nonce)
     {
         $uri = sprintf(
-            'https://%s.myshopify.com/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%s',
+            'https://%s.myshopify.com/admin/oauth/authorize?%s',
             str_replace('.myshopify.com', '', $shopDomain),
-            $apiKey,
-            implode(',', $scopes),
-            $redirectUri,
-            $nonce
+            http_build_query([
+                'client_id' => $apiKey,
+                'scope' => implode(',', $scopes),
+                'redirect_uri' => $redirectUri,
+                'state' => $nonce,
+            ])
         );
 
         parent::__construct($uri);
